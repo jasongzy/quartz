@@ -125,4 +125,4 @@ underutilization 利用不足
 
 [Karan Atree's answer to What can I learn/know right now in 10 minutes that will be useful for the rest of my life? - Quora](https://www.quora.com/What-can-I-learn-know-right-now-in-10-minutes-that-will-be-useful-for-the-rest-of-my-life/answer/Karan-Atree)
 
-![|500](Academic/assets/45 Ways to avoid using the word very.png)
+![|500](Academic/assets/45-Ways-to-avoid-using-the-word-very.png)
