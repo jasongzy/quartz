@@ -105,7 +105,7 @@ torch.Tensor: `[batch, channel, height, width]`
 ### concat v.s. stack
 
 - `torch.cat` (`torch.concat`, `torch.concatenate`; `np.concatenate`)：沿着现有的轴合并，所有数据在*除待合并轴以外的其他维度*上 shape 均应相同，e.g. `[[3, 4], [4, 4]] --> [7, 4]`
-- `torch.stack` (`np.stack`)：沿着新的轴合并，所有数据 shape 应完全相同，\*e.g.\_ `[[3, 4], [3, 4]] --> [2, 3, 4]`
+- `torch.stack` (`np.stack`)：沿着新的轴合并，所有数据 shape 应完全相同，e.g. `[[3, 4], [3, 4]] --> [2, 3, 4]`
 
 ### repeat v.s. tile v.s. expand
 
@@ -144,7 +144,7 @@ from torch import einsum
 
 从输出标记中**省略**的字母表示沿该轴的值将被**求和**。
 
-\*e.g.\_ 矩阵 $A$、$B$ 的乘积：
+e.g. 矩阵 $A$、$B$ 的乘积：
 
 ```python
 einsum('ij,jk->ik', A, B)
