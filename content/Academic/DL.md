@@ -1,9 +1,9 @@
 ---
-{"publish":true,"created":"2024-06-21T15:00:46.000+08:00","cssclasses":""}
+publish: true
+created: 2024-06-21T15:00:46.000+08:00
+cssclasses: ""
 ---
 
-
-[TOC]
 
 [Deep Learning cheatsheets for Stanford's CS 230](https://github.com/afshinea/stanford-cs-230-deep-learning)
 
@@ -259,7 +259,7 @@ LN 和 BN 的区别：
 
 #### RMSNorm
 
-研究发现 [[Academic/DL#LayerNorm]] 的优势在于缩放不变性（即方差的计算，让模型对于输入和权重上的偏移噪声不敏感），而不是重新居中（即均值的计算，让模型在输入和权重都被随机缩放时保持输出表示不变）。
+研究发现 LayerNorm 的优势在于缩放不变性（即方差的计算，让模型对于输入和权重上的偏移噪声不敏感），而不是重新居中（即均值的计算，让模型在输入和权重都被随机缩放时保持输出表示不变）。
 
 所以，RMSNorm 省略了归一化过程中的均值计算，仅计算特征的均方根，使得算法更加简洁，而效果不减，且运算效率显著提升。此外，归一化后应用可学习的仿射变换时，通常仅保留缩放参数，而省略偏移参数。实验表明，中心化（减均值）对性能影响有限，移除后仍能保持模型表达能力。
 
@@ -324,7 +324,7 @@ $$
 
 即对应元素相乘（加权）、求和、滑窗重复操作。
 
-*e.g.* 边缘检测
+e.g. 边缘检测
 
 以灰度图像为例，矩阵的每一个元素就是对应像素的灰度（亮度）值，数值越大表示越亮。
 
@@ -352,7 +352,7 @@ $(n\times n) * (f\times f) = (n-f+1\quad\times\quad n-f+1)$
 
 一般 CV 中使用的滤波器维数都是奇数。
 
-*e.g.* Same Padding:
+e.g. Same Padding:
 
 ![|200](Academic/assets/16310782721546.gif)
 
@@ -368,7 +368,7 @@ $$
 
 其中 $[\cdot]$ 表示 $\operatorname{floor}(\cdot)$ 向下取整
 
-*e.g.* stride=2:
+e.g. stride=2:
 
 ![|200](Academic/assets/16310792749440.gif)
 
@@ -404,7 +404,7 @@ CNN 中有三种典型层：
 
 ### 池化层 Pooling
 
-*e.g.* Max / Average Pooling
+e.g. Max / Average Pooling
 
 相当于一层参数给定（**不需要**学习权重和偏置）、步长等于卷积核大小的卷积层。用于缩减模型大小，提高计算速度，提高提取特征的鲁棒性。
 
@@ -608,11 +608,13 @@ $$
 
 Encoder-Decoder 结构
 
-![|400](Academic/assets/16310240361442.png)
+![|400](Academic/assets/ModalNet-21.png)
 
 实际应用中的 Transformer 结构往往将编码器和解码器反复堆叠，以便更好地通过注意力机制获取全局信息。
 
 #### 多头注意力机制（Multi-Head Attention）
+
+![|300](Academic/assets/ModalNet-20.png)
 
 通过构造一系列并列的注意力模块，将输入映射到不同的子空间，有助于学习更加丰富的注意力表达。
 

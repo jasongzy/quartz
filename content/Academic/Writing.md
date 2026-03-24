@@ -1,5 +1,7 @@
 ---
-{"publish":true,"created":"2024-06-21T15:00:46.000+08:00","cssclasses":""}
+publish: true
+created: 2024-06-21T15:00:46.000+08:00
+cssclasses: ""
 ---
 
 
@@ -15,7 +17,7 @@
 - 强调：especially, particularly, note that, notably
 - 关于：about, as to, as for, in (with) regard to, with respect to, in relation to, in terms of, when it comes to
 - 总结：in summary, in conclusion, in general, generally speaking, in short, in brief, overall, on the whole, by and large, to sum up
-- *其他连接表达*：admittedly, after all, contribute to, to the best of our knowledge
+- 其他连接表达：admittedly, after all, contribute to, to the best of our knowledge
 
 ## 名词
 

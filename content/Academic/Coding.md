@@ -1,5 +1,7 @@
 ---
-{"publish":true,"created":"2024-10-31T00:31:17.000+08:00","cssclasses":""}
+publish: true
+created: 2024-10-31T00:31:17.000+08:00
+cssclasses: ""
 ---
 
 
@@ -102,8 +104,8 @@ torch.Tensor: `[batch, channel, height, width]`
 
 ### concat v.s. stack
 
-- `torch.cat` (`torch.concat`, `torch.concatenate`; `np.concatenate`)：沿着现有的轴合并，所有数据在*除待合并轴以外的其他维度*上 shape 均应相同，*e.g.* `[[3, 4], [4, 4]] --> [7, 4]`
-- `torch.stack` (`np.stack`)：沿着新的轴合并，所有数据 shape 应完全相同，*e.g.* `[[3, 4], [3, 4]] --> [2, 3, 4]`
+- `torch.cat` (`torch.concat`, `torch.concatenate`; `np.concatenate`)：沿着现有的轴合并，所有数据在*除待合并轴以外的其他维度*上 shape 均应相同，e.g. `[[3, 4], [4, 4]] --> [7, 4]`
+- `torch.stack` (`np.stack`)：沿着新的轴合并，所有数据 shape 应完全相同，\*e.g.\_ `[[3, 4], [3, 4]] --> [2, 3, 4]`
 
 ### repeat v.s. tile v.s. expand
 
@@ -142,7 +144,7 @@ from torch import einsum
 
 从输出标记中**省略**的字母表示沿该轴的值将被**求和**。
 
-*e.g.* 矩阵 $A$、$B$ 的乘积：
+\*e.g.\_ 矩阵 $A$、$B$ 的乘积：
 
 ```python
 einsum('ij,jk->ik', A, B)
@@ -411,7 +413,7 @@ PyTorch Lightning 默认采用 TensorBoard 进行 Log 管理。在 `training_ste
 
 默认情况下，日志目录位于 `os.getcwd()`，可以在初始化 `trainer` 时使用 `pl.Trainer(default_root_dir='/your/path/to/save/checkpoints')` 参数进行修改。默认每 50 steps 记录一次 log。
 
-*e.g.*
+e.g.
 
 ```python
 import os
