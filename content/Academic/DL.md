@@ -1,9 +1,7 @@
 ---
 publish: true
 created: 2024-06-21T15:00:46.000+08:00
-cssclasses: ""
 ---
-
 
 [Deep Learning cheatsheets for Stanford's CS 230](https://github.com/afshinea/stanford-cs-230-deep-learning)
 

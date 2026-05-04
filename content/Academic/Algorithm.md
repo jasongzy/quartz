@@ -1,9 +1,7 @@
 ---
 publish: true
 created: 2024-06-21T15:00:46.000+08:00
-cssclasses: ""
 ---
-
 
 ## 基础知识
 
@@ -82,7 +80,7 @@ def linked_in_reverse(head)
 
 都可以用  **递归**  或  **栈**  实现
 
-其中递归隐式地利用了*调用栈*
+其中递归隐式地利用了 _调用栈_
 
 递归方法的函数 `search` 非常简洁：按照指定的顺序执行 `visit(node)`、`search(node.left)`、`search(node.right)` 即可
 
@@ -123,14 +121,14 @@ Post-order
 
 用 **栈** 实现：
 
-需要先下潜到最左下角才开始访问。可以用与[[Academic/Algorithm#中序遍历]]相仿的循环思路：
+需要先下潜到最左下角才开始访问。可以用与[[#中序遍历]]相仿的循环思路：
 
-**（完全一致）**初始化空栈 `stack` ，初始化当前节点 `current = root`，然后循环执行以下步骤，循环条件是 `stack or current`：
+**（完全一致）** 初始化空栈 `stack` ，初始化当前节点 `current = root`，然后循环执行以下步骤，循环条件是 `stack or current`：
 
-- **（完全一致）**子循环找到最左下角的节点：子循环条件 `current is not None`：`current` 节点入栈，然后令 `current = current.left`；跳出循环后，栈顶就是（未访问过的节点中的）最左下角的节点；
-- 栈顶节点赋值给 `current` 但**不出栈不访问**，判断：**上一次出栈访问的节点是否就是 `current.right` 或 `current.right is None`**：
-  - 若是：说明已经完成了该节点的左子节点、右子节点遍历，下面遍历本身即可，因此将该节点出栈并访问处理（同时更新*上一次出栈访问的节点*），且**令 `current = None`（防止下次循环重复入栈）**；
-  - 若否：说明只完成了左子节点遍历，下面遍历右子节点**（与中序遍历一致）**，因此令 `current = current.right`，然后开始下一次循环即可。
+- **（完全一致）** 子循环找到最左下角的节点：子循环条件 `current is not None`：`current` 节点入栈，然后令 `current = current.left`；跳出循环后，栈顶就是（未访问过的节点中的）最左下角的节点；
+- 栈顶节点赋值给 `current` 但 **不出栈不访问**，判断：**上一次出栈访问的节点是否就是 `current.right` 或 `current.right is None`**：
+  - 若是：说明已经完成了该节点的左子节点、右子节点遍历，下面遍历本身即可，因此将该节点出栈并访问处理（同时更新 _上一次出栈访问的节点_），且 **令 `current = None`（防止下次循环重复入栈）**；
+  - 若否：说明只完成了左子节点遍历，下面遍历右子节点 **（与中序遍历一致）**，因此令 `current = current.right`，然后开始下一次循环即可。
 
 #### 广度优先遍历/层序遍历（BFS）
 
@@ -390,7 +388,7 @@ Bucket sort
 
 Timsort
 
-Python 的标准库默认算法，巧妙结合了[[Academic/Algorithm#插入排序]]和[[Academic/Algorithm#归并排序]]的优点
+Python 的标准库默认算法，巧妙结合了[[#插入排序]]和[[#归并排序]]的优点
 
 **稳定排序**算法
 
@@ -600,7 +598,7 @@ def unbounded_knapsack(cap: int, wgt: List[int], val: List[int]) -> int:
 
 此实现与 0-1 背包问题实现的差别仅仅在于内层循环是否倒序遍历。即：**正序遍历状态是可以无限选择的完全背包问题，倒序遍历状态是只能选择一次的 0-1 背包问题**。
 
-可以观察到，空间优化后的代码结构与[[Academic/Algorithm#动态规划\|一维动态规划实现模板]]是等价的（内外层循环交换了一下，对于完全背包问题没有实质影响）。这是因为，一维动规的状态只有背包容量，也就是说，任意背包容量的子问题都可以随意使用全部的物品（选择列表始终不变），这与完全背包问题的定义是一致的。
+可以观察到，空间优化后的代码结构与[[#动态规划|一维动态规划实现模板]]是等价的（内外层循环交换了一下，对于完全背包问题没有实质影响）。这是因为，一维动规的状态只有背包容量，也就是说，任意背包容量的子问题都可以随意使用全部的物品（选择列表始终不变），这与完全背包问题的定义是一致的。
 
 ### 贪心算法
 
@@ -680,7 +678,7 @@ Dijkstra 算法只能用在**权重非负**的图中，即不能出现“多绕�
 
 虽然是动态规划，但由于情况复杂，更适合采用自顶向下的“记忆化搜索”递归方案。
 
-**通用模板**参考题解：[902. 最大为 N 的数字组合 - 力扣（LeetCode）](https://leetcode.cn/problems/numbers-at-most-n-given-digit-set/solutions/1900101/shu-wei-dp-tong-yong-mo-ban-xiang-xi-zhu-e5dg/?envType=problem-list-v2&envId=x9p9agni)
+**通用模板**参考题解：[902. 最大为 N 的数字组合 - 力扣（LeetCode）](https://leetcode.cn/problems/numbers-at-most-n-given-digit-set/solutions/1900101/shu-wei-dp-tong-yong-mo-ban-xiang-xi-zhu-e5dg/?envType=problem-list-v2\&envId=x9p9agni)
 
 ### 树状数组
 

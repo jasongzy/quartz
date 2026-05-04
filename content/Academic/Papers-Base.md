@@ -1,9 +1,7 @@
 ---
 publish: true
 created: 2024-08-17T00:35:36.000+08:00
-cssclasses: ""
 ---
-
 
 ## ✨ 通用网络与方法
 
@@ -74,7 +72,7 @@ RoI: Region of Interest
 > - [The Illustrated Transformer – Jay Alammar – Visualizing machine learning one concept at a time.](https://jalammar.github.io/illustrated-transformer/)
 > - [The Illustrated Transformer【译】于建民的博客-CSDN 博客](https://blog.csdn.net/yujianmin1990/article/details/85221271)
 
-![[Academic/DL#Transformer for NLP\|Transformer for NLP]]
+![[DL#Transformer for NLP|Transformer for NLP]]
 
 Encoder:
 
@@ -86,7 +84,7 @@ Decoder:
 
 ![|800](Academic/assets/transformer_decoding_2.gif)
 
-注意，训练阶段时，Decoder 最下方的输入是 output GT 右移一位的结果，第一个词是\[BOS\] (Begin of Sequence)，后续词与真正的 decoder output（可能有错）无关。虽然 decoder 理应串行地分多个时间步完成输入输出，但由于训练时 output GT 完全已知，所以可以把这一过程 batch 化，只需要用一个下三角的 mask 矩阵挡住”理应未知“的后续 output score（softmax 前）即可。
+注意，训练阶段时，Decoder 最下方的输入是 output GT 右移一位的结果，第一个词是\[BOS] (Begin of Sequence)，后续词与真正的 decoder output（可能有错）无关。虽然 decoder 理应串行地分多个时间步完成输入输出，但由于训练时 output GT 完全已知，所以可以把这一过程 batch 化，只需要用一个下三角的 mask 矩阵挡住”理应未知“的后续 output score（softmax 前）即可。
 
 而测试阶段时，真正将 decoder output（可能有错）输回给 decoder 来预测下一个词，是多个时间步串行的，因此也就不再需要 mask 了。
 
@@ -334,7 +332,7 @@ Patch merging 的过程是：将 2×2 个窗口范围内的 patch 对应的所�
 
 ## ✨ Object Detection
 
-[一文读懂目标检测：R-CNN、Fast R-CNN、Faster R-CNN、YOLO、SSD_rcnn-CSDN 博客](https://blog.csdn.net/v_july_v/article/details/80170182)
+[一文读懂目标检测：R-CNN、Fast R-CNN、Faster R-CNN、YOLO、SSD\_rcnn-CSDN 博客](https://blog.csdn.net/v_july_v/article/details/80170182)
 
 ### Faster R-CNN
 
@@ -533,7 +531,7 @@ pretext task：匹配文本（描述性短句）和图像（而非直接预测�
 
 InfoNCE 损失：在一批相似度数据中找到唯一的正例样本，这相当于一个互斥的多分类任务：找到正例应该属于哪一个样本/哪一类，即先取正例的相似度在所有样本中的 softmax，使其变成一个和为 1 的概率分布，再取负对数，也就是标准的多分类交叉熵损失。
 
-> 后续也有工作 [SigLIP](https://zhuanlan.zhihu.com/p/718982190) 改进此损失：不再把正负样本放在一起使用 softmax（耦合互斥），而是视作不互斥的二分类任务，对每个样本独立使用 sigmoid。
+> 后续也有工作 [[#SigLIP]] 改进此损失：不再把正负样本放在一起使用 softmax（耦合互斥），而是视作不互斥的二分类任务，对每个样本独立使用 sigmoid。
 
 预训练完成后，在进行下游的 zero-shot transfer 任务（图像分类）时，考虑到大部分的数据集的标签都是以单词的形式存在的，然而在预训练阶段的文本描述大多都是某个短句，为了填补这种数据分布上的差别，作者考虑用 prompt template 对标签进行扩展，例如可以用 `a photo of a "object".` 作为文本端的输入，其中的 `object` 就是需要预测的 zero-shot 类别标签（将数据集的类别标签转换为文字描述）。将数据集所有类别标签对应的 prompt template 通过 text encoder 获得其特征，输入的图片经过 image encoder 输出特征，计算其与各类别文本特征的余弦相似度以预测类别。
 
@@ -604,6 +602,21 @@ ViLT 的预训练任务有 2 个：Image Text Matching (ITM)，以 0.5 的概率
 
 根据图片生成 prompt 的工具 [**Clip Interrogator**](https://github.com/pharmapsychotic/clip-interrogator) 就是通过 CLIP 和 BLIP 结合实现的：由 BLIP 通过图片生成一句话描述，同时用 CLIP 从数据集中检索出与图片特征相似度高的多个短语 prompt。
 
+### SigLIP
+
+> [!info]+
+> **Sigmoid Loss for Language Image Pre-Training**
+> ICCV 2023 Oral; Google
+>
+> - [Zotero](zotero://select/items/@zhai2023sigmoid)
+> - [URL](https://openaccess.thecvf.com/content/ICCV2023/html/Zhai_Sigmoid_Loss_for_Language_Image_Pre-Training_ICCV_2023_paper.html)
+> - [arXiv](https://arxiv.org/abs/2303.15343)
+> - [PDF](file:///D:%5CMedia%5CDocuments%5C%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3%5CAcademic%5CZotero%5Cstorage%5CDL%5CSigLIP_ICCV_2023.pdf)
+> - [Code](https://github.com/google-research/big_vision)
+> - [SigLIP——采用 sigmoid 损失的图文预训练方式 - 知乎](https://zhuanlan.zhihu.com/p/718982190)
+
+与 CLIP 不同的是，SigLIP 在训练过程中对图像-文本对采用成对 sigmoid 损失（相当于视作二分类任务）。这种训练损失无需全局查看 batch 内所有图像与文本之间的成对相似度，因此不仅能更高效地扩展到更大的 batch，也能在较小的 batch 下实现更优的性能。
+
 ## ✨ VAE
 
 - [图像生成发展起源：从 VAE、VQ-VAE、扩散模型 DDPM、DETR 到 ViT、Swin transformer-CSDN 博客](https://blog.csdn.net/v_JULY_v/article/details/130361959)
@@ -672,7 +685,7 @@ VQ-VAE 训练完成后可以很容易实现图像压缩、重建的目的，但�
 
 被用于 OpenAI 的 DALL-E 模型
 
-[[Academic/Papers-Base#🔥 VQ-VAE\|VQ-VAE]] 的 encoder 输出一个连续 latent，然后通过最近邻搜索的方式对应到离散的码本上，并通过梯度直通（Straight-Through）的方式进行梯度回传。
+[[#🔥 VQ-VAE|VQ-VAE]] 的 encoder 输出一个连续 latent，然后通过最近邻搜索的方式对应到离散的码本上，并通过梯度直通（Straight-Through）的方式进行梯度回传。
 
 dVAE 与之不同，encoder 的输出被视为一个离散概率分布的 logits（而非 latent 本身），然后通过 [Gumbel-Softmax 技巧](https://zhuanlan.zhihu.com/p/633431594)（为分类分布的 logits 添加 gumbel noise，然后选择加完噪声后值最大的那个类别，这一采样过程与从原始分类分布中采样是等价的；把其中的 argmax 操作软化为 softmax 即可微）获得分类分布的采样结果 index。
 
@@ -712,7 +725,9 @@ GAN Loss 的意义在于，在无法得到生成图片和真实图片的实际�
 
 原始 GAN Loss 在实际优化过程中存在梯度弥散问题，因此作者又提出了 non-saturating (NS) GAN Loss（非饱和：若输入无穷大则输出也无穷大），将 $\min\log(1−D(G(z)))$ 改为 $\max\log ⁡(D(G(z)))$：
 
-$$\log(1−D(G(z))) \rightarrow -\log (D(G(z)))$$
+$$
+\log(1−D(G(z))) \rightarrow -\log (D(G(z)))
+$$
 
 GAN 与全监督式的生成方法不同，因为生成任务的期望输出往往是不确定的（具有一定概率分布），直接生成很可能导致多种可能结果的混合和平均（图片的模糊），而 GAN 具有一定的“创造力”，能够从概率分布中采样出合理的结果。当然，可以将这二者结合以产生更好的生成结果。
 
@@ -788,7 +803,7 @@ VQGAN 在 VQ-VAE 基础上做出的主要改变：
 1. 引入 GAN 的思想，将 VQ-VAE 当做生成器（Generator），加入判别器（Discriminator），以对生成图像的质量进行判断、监督，并加入感知重建损失来重建更具有保真度的图片，也就学习了更丰富的 codebook
 2. 将训练完成后用于自回归生成 latent code 的 PixelCNN 替换为性能更强大的 Transformer（GPT2），并引入滑动窗口自注意力机制，以降低计算负载，生成更大分辨率的图像
 
-与 [[Academic/Papers-Base#VQ-VAE]] 类似，训练 VQGAN 时，需要先训练一对 encoder & decoder 完成图像到 latent space 的压缩转换，再训练一个 Transformer-based 模型用于生成压缩后的 latent map。推理生成时，先用 Transformer 生成出一个 latent map（next-token prediction 按空间顺序预测一张图像的所有 tokens），再用 decoder 复原为真实图像。
+与 [[#VQ-VAE]] 类似，训练 VQGAN 时，需要先训练一对 encoder & decoder 完成图像到 latent space 的压缩转换，再训练一个 Transformer-based 模型用于生成压缩后的 latent map。推理生成时，先用 Transformer 生成出一个 latent map（next-token prediction 按空间顺序预测一张图像的所有 tokens），再用 decoder 复原为真实图像。
 
 **思考**
 
@@ -856,7 +871,7 @@ VQGAN 在 VQ-VAE 基础上做出的主要改变：
 > - [PDF](file:///D:%5CMedia%5CDocuments%5C%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3%5CAcademic%5CZotero%5Cstorage%5CAIGC%5CDDPM_NIPS_2020.pdf)
 > - [Project](https://hojonathanho.github.io/diffusion/)
 > - [Code](https://github.com/hojonathanho/diffusion)
-> - [DDPM（Denoising Diffusion Probabilistic Models）扩散模型简述\_champion_H 的博客-CSDN 博客](https://blog.csdn.net/zhL816/article/details/127990163)
+> - [DDPM（Denoising Diffusion Probabilistic Models）扩散模型简述\_champion\_H 的博客-CSDN 博客](https://blog.csdn.net/zhL816/article/details/127990163)
 > - [由浅入深了解 Diffusion Model - 知乎](https://zhuanlan.zhihu.com/p/525106459)
 > - [一文弄懂 Diffusion Model - 知乎](https://zhuanlan.zhihu.com/p/586936791)
 > - [生成扩散模型漫谈（一）：DDPM = 拆楼 + 建楼 - 科学空间|Scientific Spaces](https://spaces.ac.cn/archives/9119)
@@ -883,7 +898,7 @@ $$
 
 > 为什么扩散率是逐渐增大的呢？也即为什么噪音所占的比例越来越大呢？可以反过来理解，在加噪声的过程中，扩散率逐渐增大，对应着在去噪声的过程中，扩散率逐渐减小。也就是说，去噪的过程是先把“明显”的噪声给去除，对应着较大的扩散率；当去到一定程度，逐渐逼近真实图像的时候，去噪速率逐渐减慢，开始微调，也就是对应着较小的扩散率。
 
-在上述过程中，利用[[Academic/DL#重参数化技巧（Reparametrization tricks）\|重参数化技巧]]，我们可以通过单次计算就一步到位地得到任意时间步 $t$ 后的加噪结果分布（闭式解）：令 $\alpha_t=1-\beta_t$，$\overline{\alpha_t}=\prod_{i=1}^t \alpha_i$，
+在上述过程中，利用[[DL#重参数化技巧（Reparametrization tricks）|重参数化技巧]]，我们可以通过单次计算就一步到位地得到任意时间步 $t$ 后的加噪结果分布（闭式解）：令 $\alpha_t=1-\beta_t$，$\overline{\alpha_t}=\prod_{i=1}^t \alpha_i$，
 
 $$
 \begin{align}
@@ -941,9 +956,9 @@ $$
 > 既然我们每一步加的噪声都是参数已知的高斯分布，为什么不能直接在每一步都采样一个高斯分布当作噪声，令上一步的结果不断减去该噪声呢？因为要想使得这么做成立，必须要在每一步都恰好获得当初加噪时的那一步的高斯采样值（而不能是同分布的另一个采样值），这是不现实的。
 > 事实上，我们在训练网络时也并没有期望神经网络能做到这种程度，而是让它去拟合某一种分布的目标图像们加噪加到这一步时所加噪声的整体分布。虽然我们在每一步加噪的时候确实都是随机取的标准高斯分布，但熵增容易熵减难，反过来想要从纯噪声中还原某一张原图，一步步减去的噪声采样值势必遵循某种规律。网络所拟合的正是某类目标图片所呈现出的这种共同规律。
 >
-> 那么，在网络预测出当前步所加的噪声之后，能不能直接用 $x_t$ 减去噪声获得 $x_{t-1}$ 呢？理论上可以这么做，这相当于认为 $\tilde{\beta}_t=0$，使得 Diffusion 的生成结果仅依赖于初始的噪声图，与 GAN generator 或 VAE decoder 一致，中间过程不再具有任何随机性（[[Academic/Papers-Base#DDIM]] 就探索了每一步采样的方差取其他值甚至取 $0$ 时的效果）。因此为了人为增加生成图像的多样性，我们并不把网络输出结果当做唯一确定的噪声值，而是由这个采样值计算出 $x_{t-1}$ 的分布均值，进而重新采样获得 $x_{t-1}$ 的某一可能结果。注意，对 $x_{t-1}$ 的采样过程诚然是重参数化的高斯分布采样，但因为网络给出了给定步数下符合某种既定规律的噪声采样值，所以确实有机会逐步还原（生成）出有意义的原图（符合训练集分布的新图）。
+> 那么，在网络预测出当前步所加的噪声之后，能不能直接用 $x_t$ 减去噪声获得 $x_{t-1}$ 呢？理论上可以这么做，这相当于认为 $\tilde{\beta}_t=0$，使得 Diffusion 的生成结果仅依赖于初始的噪声图，与 GAN generator 或 VAE decoder 一致，中间过程不再具有任何随机性（[[#DDIM]] 就探索了每一步采样的方差取其他值甚至取 $0$ 时的效果）。因此为了人为增加生成图像的多样性，我们并不把网络输出结果当做唯一确定的噪声值，而是由这个采样值计算出 $x_{t-1}$ 的分布均值，进而重新采样获得 $x_{t-1}$ 的某一可能结果。注意，对 $x_{t-1}$ 的采样过程诚然是重参数化的高斯分布采样，但因为网络给出了给定步数下符合某种既定规律的噪声采样值，所以确实有机会逐步还原（生成）出有意义的原图（符合训练集分布的新图）。
 >
-> 能不能逆用重参数方法，用 $x_t$ 预测出 $\epsilon_t$ 后一步到位求得 $x_{0}$ 呢？不可以，因为训练时噪声与真值样本是随机采样配对的，配对结果必然不甚合理（如果配对好，是可以训练步数更少的模型的，这就是 Diffusion 步数蒸馏的做法；另外，事实上 VAE 就是在学习一套合理的配对过程），不同样本的加噪路径轨迹存在交叉（交叉点处网络预测结果将是**不同样本路径的期望**），而标准高斯噪声是所有样本的最终归宿，因此实际上对应着无数样本，即使网络的学习能力再强，一步去噪的预测结果也是无数训练样本在这个位置上的平均噪声方向，朝着这个方向一条路走到底大概率不会到达有意义的样本点（因为高维空间中语义流形的稀疏性）。只有一步一步去噪，使得噪声图沿着合理的路径逐渐偏离标准正态分布，而成为一个特化的正态分布，此时采样一次才能获得足够清晰的结果。但如果步子不要跨这么大，每隔一定步数采样一次，还是可行的，并且可以加速采样过程。[[Academic/Papers-Base#IDDPM]] 和 [[Academic/Papers-Base#DDIM]] 都探索了类似的采样加速方法。
+> 能不能逆用重参数方法，用 $x_t$ 预测出 $\epsilon_t$ 后一步到位求得 $x_{0}$ 呢？不可以，因为训练时噪声与真值样本是随机采样配对的，配对结果必然不甚合理（如果配对好，是可以训练步数更少的模型的，这就是 Diffusion 步数蒸馏的做法；另外，事实上 VAE 就是在学习一套合理的配对过程），不同样本的加噪路径轨迹存在交叉（交叉点处网络预测结果将是**不同样本路径的期望**），而标准高斯噪声是所有样本的最终归宿，因此实际上对应着无数样本，即使网络的学习能力再强，一步去噪的预测结果也是无数训练样本在这个位置上的平均噪声方向，朝着这个方向一条路走到底大概率不会到达有意义的样本点（因为高维空间中语义流形的稀疏性）。只有一步一步去噪，使得噪声图沿着合理的路径逐渐偏离标准正态分布，而成为一个特化的正态分布，此时采样一次才能获得足够清晰的结果。但如果步子不要跨这么大，每隔一定步数采样一次，还是可行的，并且可以加速采样过程。[[#IDDPM]] 和 [[#DDIM]] 都探索了类似的采样加速方法。
 > 事实上，传统的扩散模型本质上是采用数值方法对常微分方程进行迭代求解。虽然可以通过设计更加精确的求解器来改善每一步的求解精度，减少所需要的迭代次数，但是这些方法中最好的也仍然需要 10 步左右的迭代步数来得到足够好的求解结果。[Consistency Models](https://github.com/openai/consistency_models) 为此探索了一步生成的方案。
 >
 > 一个比喻：设想一个玻璃杯被打碎，碎片四散的轨迹是随机的。然而给定一堆随机分布的玻璃碎片，如果想要还原出想要的玻璃杯，那么各个碎片的拼合必须就得按照一定的规律来（已知某一确定的纯噪声 $x_T$，去噪过程并不能完全随机）。最简单的做法是完全记录下当初打碎形成这一堆碎片的全过程，逆向还原。然而，这一堆碎片未必是由我们打碎并记录过的（Diffusion 推理时输入的高斯随机噪声 $x_T$ 不太可能恰好是训练时不断加噪形成的那些网络见过的噪声之一），并且还原的路径也不是唯一的，沿着不同的路径都有可能还原出玻璃杯，虽然细节可能略有差别（网络见过海量的加噪结果后，有能力推断出每一步去噪的大致走向，而在此基础上人为引入一定程度的随机性也是完全合理的）。
@@ -1126,15 +1141,21 @@ Latent Diffusion / SD 包含三个重要的网络组件（[参考](https://huggi
 
 不直接预测 $\epsilon$，而是预测 $\epsilon$ 与 $x_0$ 的某个设计好的线性组合：
 
-$$v_t = \sqrt{\bar{\alpha}_t} \epsilon - \sqrt{1-\bar{\alpha}_t} x_0$$
+$$
+v_t = \sqrt{\bar{\alpha}_t} \epsilon - \sqrt{1-\bar{\alpha}_t} x_0
+$$
 
 根据 $x_t = \sqrt{\bar{\alpha}_t} x_0 + \sqrt{1-\bar{\alpha}_t} \epsilon$，也可以表示为：
 
-$$v_t = \frac{\sqrt{\bar{\alpha}_t} x_t - x_0}{\sqrt{1-\bar{\alpha}_t}}$$
+$$
+v_t = \frac{\sqrt{\bar{\alpha}_t} x_t - x_0}{\sqrt{1-\bar{\alpha}_t}}
+$$
 
 或：
 
-$$v_t = \frac{1}{\sqrt{\bar{\alpha}_t}} \epsilon - \frac{\sqrt{1-\bar{\alpha}_t}}{\sqrt{\bar{\alpha}_t}} x_t$$
+$$
+v_t = \frac{1}{\sqrt{\bar{\alpha}_t}} \epsilon - \frac{\sqrt{1-\bar{\alpha}_t}}{\sqrt{\bar{\alpha}_t}} x_t
+$$
 
 相比 $x_0$-prediction 和 $\epsilon$-prediction, $v$-prediction 在训练中的收敛性和数值稳定性更好。
 
@@ -1152,19 +1173,20 @@ Stable Diffusion 2 开始使用 $v$-prediction 代替 $\epsilon$-prediction。
 
 > [!info]+
 > **An Image is Worth One Word: Personalizing Text-to-Image Generation using Textual Inversion**
-> 2022; NVIDIA
+> ICLR 2023; NVIDIA
 >
 > - [Zotero](zotero://select/items/@gal2022image)
+> - [URL](https://openreview.net/forum?id=NAQvF08TcyG)
 > - [arXiv](https://arxiv.org/abs/2208.01618)
-> - [PDF](file:///D:%5CMedia%5CDocuments%5C%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3%5CAcademic%5CZotero%5Cstorage%5CAIGC%5CTextual_Inversion_arXiv_2022.pdf)
+> - [PDF](file:///D:%5CMedia%5CDocuments%5C%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3%5CAcademic%5CZotero%5Cstorage%5CAIGC%5CTextual_Inversion_ICLR_2023.pdf)
 > - [Project](https://textual-inversion.github.io/)
 > - [Code](https://github.com/rinongal/textual_inversion)
 
 Motivation：现有的 Diffusion-based 能力强大，然而从用户角度仍不够灵活，比如若要把现实中的一些新概念（大模型没有见过的 personalization 事物）直接引入现有的大模型是很困难的——re-train 成本高；finetune 会导致灾难性遗忘。以前的大部分方法都是冻住原来的模型，然后加多层结构来作为下游任务的 adaptor，但还是存在 prior knowledge 遗忘的问题。
 
-本文基于 [[Academic/Papers-Base#Latent Diffusion (Stable Diffusion)\|Latent Diffusion]]，只改进了其中 text encoder 的词表部分，添加了 special token $S*$（pseudo-word）来表示新概念，保留原有其他 token 的 embedding 不变，从而实现与新概念的组合。
+本文基于 [[#Latent Diffusion (Stable Diffusion)|Latent Diffusion]]，只改进了其中 text encoder 的词表部分，添加了 special token $S*$（pseudo-word）来表示新概念，保留原有其他 token 的 embedding 不变，从而实现与新概念的组合。
 
-为了学习 $S*$，模仿了 [[Academic/Papers-Base#CLIP: Contrastive Language-Image Pre-training\|CLIP]] 的 prompt "A photo of $S*$" 来生成新的图片，然后约束生成的图像与用户所给的少量关于新概念的图像相似。训练完成之后就可以将 $S*$ 与新的 prompt 句式结合，来做基于新概念的生成了。
+为了学习 $S*$，模仿了 [[#CLIP: Contrastive Language-Image Pre-training|CLIP]] 的 prompt "A photo of $S*$" 来生成新的图片，然后约束生成的图像与用户所给的少量关于新概念的图像相似。训练完成之后就可以将 $S*$ 与新的 prompt 句式结合，来做基于新概念的生成了。
 
 ### DreamBooth
 
@@ -1179,7 +1201,7 @@ Motivation：现有的 Diffusion-based 能力强大，然而从用户角度仍�
 > - [Project](https://dreambooth.github.io/)
 > - [Code](https://github.com/XavierXiao/Dreambooth-Stable-Diffusion)
 
-任务与 [[Academic/Papers-Base#Texual Inversion]] 类似，都是基于新概念的生成。与之不同的是，DreamBooth 是通过 finetune diffusion model（Imagen）来实现的（而非训练 prompt，这会导致新概念的表达局限于原始模型的 domain）。
+任务与 [[#Texual Inversion]] 类似，都是基于新概念的生成。与之不同的是，DreamBooth 是通过 finetune diffusion model（Imagen）来实现的（而非训练 prompt，这会导致新概念的表达局限于原始模型的 domain）。
 
 DreamBooth 用少量个性化图片（3 到 5 张，指定 class）微调 diffusion model，配对的 prompt 均为 `a [identifier] [class noun]` 的形式。但如果只用普通的微调方式，会出现过拟合和语言漂移（在特定任务上微调时，模型会逐渐忘记通用知识，而仅仅适配特定的任务）两个问题。
 
@@ -1236,11 +1258,12 @@ LoRA  与 Transformer 的结合很简单，只需在 QKV 矩阵的计算过程�
 
 > [!info]+
 > **Scalable Diffusion Models with Transformers**
-> 2023
+> ICCV 2023
 >
 > - [Zotero](zotero://select/items/@peebles2023scalable)
+> - [URL](https://ieeexplore.ieee.org/document/10377858/)
 > - [arXiv](https://arxiv.org/abs/2212.09748)
-> - [PDF](file:///D:%5CMedia%5CDocuments%5C%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3%5CAcademic%5CZotero%5Cstorage%5CAIGC%5CDiT_arXiv_2023.pdf)
+> - [PDF](file:///D:%5CMedia%5CDocuments%5C%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3%5CAcademic%5CZotero%5Cstorage%5CAIGC%5CDiT_ICCV_2023.pdf)
 > - [Project](https://www.wpeebles.com/DiT)
 > - [Code](https://github.com/facebookresearch/DiT)
 > - [AIGC 专栏 9——Scalable Diffusion Models with Transformers （DiT）结构解析\_scalable diffusion models with transformers pdf-CSDN 博客](https://blog.csdn.net/weixin_44791964/article/details/136276539?utm_source=702048761)
@@ -1262,7 +1285,7 @@ LoRA  与 Transformer 的结合很简单，只需在 QKV 矩阵的计算过程�
 > - [arXiv](https://arxiv.org/abs/2209.03003)
 > - [PDF](file:///D:%5CMedia%5CDocuments%5C%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3%5CAcademic%5CZotero%5Cstorage%5CAIGC%5CRectified_Flow_ICLR_2023.pdf)
 
-[[ICLR2023] 扩散生成模型新方法：极度简化，一步生成 - 知乎](https://zhuanlan.zhihu.com/p/603740431)（原作者）
+[\[ICLR2023\] 扩散生成模型新方法：极度简化，一步生成 - 知乎](https://zhuanlan.zhihu.com/p/603740431)（原作者）
 
 [生成扩散模型漫谈（十七）：构建 ODE 的一般步骤（下） - 科学空间|Scientific Spaces](https://www.spaces.ac.cn/archives/9497)
 
@@ -1295,7 +1318,9 @@ $$
 
 注意：Flow 与 Diffusion 除了加噪方式上的区别，还有生成时采样上的区别。Flow 本质是求解一个 ODE，其生成过程是确定性，前一步加噪图可以直接由 Euler sampling 求出：
 
-$$x_{t + \Delta t} = x_{t} + v \cdot \Delta t$$
+$$
+x_{t + \Delta t} = x_{t} + v \cdot \Delta t
+$$
 
 而 Diffusion 本质是求解一个 SDE，它的生成过程是具有随机性的，每一步都是先确定噪声均值方差，然后再从中采样出加噪图。
 
@@ -1312,28 +1337,9 @@ $$x_{t + \Delta t} = x_{t} + v \cdot \Delta t$$
 > - [arXiv](https://arxiv.org/abs/2210.02747)
 > - [PDF](file:///D:%5CMedia%5CDocuments%5C%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3%5CAcademic%5CZotero%5Cstorage%5CAIGC%5CFlow_Matching_ICLR_2023.pdf)
 
-与 [[Academic/Papers-Base#Rectified Flow]] 是同期工作，idea 基本一致
+与 [[#Rectified Flow]] 是同期工作，idea 基本一致
 
-### IC-LoRA
-
-> [!info]+
-> **In-Context LoRA for Diffusion Transformers**
-> 2024; 阿里
->
-> - [Zotero](zotero://select/items/@huang2024incontext)
-> - [URL](http://arxiv.org/abs/2410.23775)
-> - [arXiv](https://arxiv.org/abs/2410.23775)
-> - [PDF](file:///D:%5CMedia%5CDocuments%5C%E6%88%91%E7%9A%84%E6%96%87%E6%A1%A3%5CAcademic%5CZotero%5Cstorage%5CAIGC%5CIC-LoRA_arXiv_2024.pdf)
-> - [Project](https://ali-vilab.github.io/In-Context-LoRA-Page/)
-> - [Code](https://github.com/ali-vilab/In-Context-LoRA)
-
-基于 [Group Diffusion Transformers](https://arxiv.org/abs/2410.15027) 的实验观察，认为 T2I 模型本身就具备 in-context 生成能力。
-
-于是提出：把一组图片在宽度/高度上 concat 起来，然后用 [FLUX.1](https://github.com/black-forest-labs/flux) 一次生成之。
-
-其中，text prompt 是完整描述拼接后图像的一整段话，拼接图中的 condition 部分就是输入图，其余部分是 0，对该拼接图进行加噪去噪，就相当于用 [[Academic/Papers-Base#SDEdit]] 方式进行了 inpainting。
-
-训练过程使用 LoRA 对原模型进行微调。
+[全网最易懂的 Flow Matching 详解](https://mp.weixin.qq.com/s/HzFVs1_qnZc05DkLiUwiPA)
 
 ### FLUX.1 Kontext
 

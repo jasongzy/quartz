@@ -1,9 +1,7 @@
 ---
 publish: true
 created: 2024-10-31T00:31:17.000+08:00
-cssclasses: ""
 ---
-
 
 ## Python
 
@@ -35,7 +33,7 @@ cssclasses: ""
 - `f"he is {name}"`：format 格式字符串（Python 3.6+），相当于 `"he is {}".format(name)`
 - `u"中文"` ：unicode 字面值，在 Python 3 中已无实际作用
 
-以上前缀字母均**不区分大小写**
+以上前缀字母均 **不区分大小写**
 
 参考链接：
 
@@ -61,7 +59,7 @@ Python 3.8 后 f-string 新增了一个功能：`f"{var=}"` 等价于 `f"var={va
 
 ### 连续赋值
 
-Python 中使用多个等号在一行代码内完成的连续赋值过程，实际上是将**最右侧**的常量或变量，对其左侧 `=` 前的各变量**从左至右**依次赋值。
+Python 中使用多个等号在一行代码内完成的连续赋值过程，实际上是将 **最右侧** 的常量或变量，对其左侧等号前的各变量 **从左至右** 依次赋值。
 
 ### Fancy indexing
 
@@ -77,7 +75,7 @@ python 原生的 slice 只支持给定首尾的等间隔 index
 
 ### 广播（broadcasting）机制
 
-参与运算的两个 Tensor 维度不一致时：从**尾部**对齐维度，对应同一维度的两个 size 只能有**相等的**、**其中之一为 1**、**其中之一不存在**这三种情况，否则报错。
+参与运算的两个 Tensor 维度不一致时：从 **尾部** 对齐维度，对应同一维度的两个 size 只能有 **相等的**、**其中之一为 1**、**其中之一不存在** 这三种情况，否则报错。
 
 广播时，首先将维数较少者的缺失维度 size 置 1，然后通过复制元素，将不同 size 的同一维度中的 1 扩展另一个较大的 size，最终得到 size 完全相同的两个 Tensor。
 
@@ -104,7 +102,7 @@ torch.Tensor: `[batch, channel, height, width]`
 
 ### concat v.s. stack
 
-- `torch.cat` (`torch.concat`, `torch.concatenate`; `np.concatenate`)：沿着现有的轴合并，所有数据在*除待合并轴以外的其他维度*上 shape 均应相同，e.g. `[[3, 4], [4, 4]] --> [7, 4]`
+- `torch.cat` (`torch.concat`, `torch.concatenate`; `np.concatenate`)：沿着现有的轴合并，所有数据在 _除待合并轴以外的其他维度_ 上 shape 均应相同，e.g. `[[3, 4], [4, 4]] --> [7, 4]`
 - `torch.stack` (`np.stack`)：沿着新的轴合并，所有数据 shape 应完全相同，e.g. `[[3, 4], [3, 4]] --> [2, 3, 4]`
 
 ### repeat v.s. tile v.s. expand
@@ -112,15 +110,15 @@ torch.Tensor: `[batch, channel, height, width]`
 - `np.repeat` = `torch.repeat_interleave`
   - 输入希望复制的次数、希望复制的 axis/dim（不指定则默认先 `flatten` 后再复制）
   - 数组的 `shape` 仅在指定的 dim 上有变化
-  - 以**单个元素**为单位复制： (1, 2, 3) --> (1, 1, 2, 2, 3, 3)
+  - 以 **单个元素** 为单位复制： (1, 2, 3) --> (1, 1, 2, 2, 3, 3)
 - `np.tile` = `torch.repeat` =`torch.tile`
   - 输入为各维度希望复制的次数
   - 数组 `shape` 的每一 dim 会乘上相应的复制次数
-  - 以同一维度**所有元素整体**为单位复制： (1, 2, 3) --> (1, 2, 3, 1, 2, 3)
+  - 以同一维度 **所有元素整体** 为单位复制： (1, 2, 3) --> (1, 2, 3, 1, 2, 3)
   - 三者都支持输入的 repea.ndims >= array.ndims，此时 array 将在左边 `unsqueeze` 出相应数量的新维度
   - `np.tile` 与 `torch.tile` 还支持 repeat.ndims < array.ndims，此时 repeat 数将在左边新增相应数量的 `1`，即 repeat 是右对齐的
 - `torch.expand` = `torch.broadcast_to` = `np.broadcast_to`
-  - 输入是扩展后的**目标尺寸**，`-1` 代表无变化
+  - 输入是扩展后的 **目标尺寸**，`-1` 代表无变化
   - 只支持扩展原本为 1 的维度，或是增加新的维度（右对齐，即维度新增在左侧）
   - 共享内存，因此不应该在 `expand` 之后进行 in-place 操作，而应当先 `clone`
 
@@ -140,9 +138,9 @@ from torch import einsum
 
 用字符串（以 `,` 相隔的字母）来标记张量的各个轴，只关注输入和输出（以 `->` 相隔）的维度。
 
-在输入数组的标记之间，**重复**字母表示沿这些轴的值将**相乘**，这些乘积构成输出数组的值。
+在输入数组的标记之间，**重复** 字母表示沿这些轴的值将 **相乘**，这些乘积构成输出数组的值。
 
-从输出标记中**省略**的字母表示沿该轴的值将被**求和**。
+从输出标记中 **省略** 的字母表示沿该轴的值将被 **求和**。
 
 e.g. 矩阵 $A$、$B$ 的乘积：
 
@@ -171,13 +169,13 @@ import einops
 
 结论：在 Conv1d 的 `kernel_size=stride=1`, `padding=0`的情况下，其与 Linear 模块是等价的（MLP / Fully Connected），但二者的初始化和具体实现过程可能有所不同，造成深层堆叠后的计算和梯度传导结果略有一些数值差异。
 
-注意，两个模块的**输入输出维度顺序**是不同的：
+注意，两个模块的 **输入输出维度顺序** 是不同的：
 
-`nn.Linear` ([doc](https://pytorch.org/docs/stable/generated/torch.nn.Linear.html))：接受输入维度 [\*, $C_{in}$]，输出 [\*, $C_{out}$]，其中 \* 表示前面可以任意增加维度，均作为 batch 并行处理。
+`nn.Linear` ([doc](https://pytorch.org/docs/stable/generated/torch.nn.Linear.html))：接受输入维度 \[\*, $C_{in}$]，输出 \[\*, $C_{out}$]，其中 \* 表示前面可以任意增加维度，均作为 batch 并行处理。
 
-`nn.Conv1d` ([doc](https://pytorch.org/docs/stable/generated/torch.nn.Conv1d.html))：接受输入维度 [batch\_size, $C_{in}$, $L_{in}$]，输出 [batch\_size, $C_{out}$, $L_{out}$]，其中 $L$ 为数据长度，在等价 FC 时输入输出长度相同。
+`nn.Conv1d` ([doc](https://pytorch.org/docs/stable/generated/torch.nn.Conv1d.html))：接受输入维度 \[batch\_size, $C_{in}$, $L_{in}$]，输出 \[batch\_size, $C_{out}$, $L_{out}$]，其中 $L$ 为数据长度，在等价 FC 时输入输出长度相同。
 
-即：`nn.Linear`的维度变换作用于**最后一维**，`nn.Conv1d`的维度变换作用于**第二维**。
+即：`nn.Linear`的维度变换作用于 **最后一维**，`nn.Conv1d`的维度变换作用于 **第二维**。
 
 一个带 batch 的逐点三维坐标处理 MLP 示例：
 
@@ -197,7 +195,7 @@ y_conv = fc_conv(x.permute(0, 2, 1)) # [50, 256, 1024]
 
 本质上都是对交叉熵损失的实现，但内部计算方式和使用场景有所不同：
 
-[BCELoss](https://pytorch.org/docs/stable/generated/torch.nn.BCELoss.html) $=-y\log(\hat{y}) - (1-y)\log(1-\hat{y})$， 用于二分类或者**多标签**分类（每类独立不互斥，计算总 loss 时对所有类的交叉熵取平均即可）。虽然是两项之和，但对于确定的 label $y \in \{0, 1\}$，总是只有一项不为 0。输入的预测值应当是 $[0, 1]$ 之内的概率值，即应当经过 sigmoid 函数。另有 [BCEWithLogitsLoss](https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html)，相当于 Sigmoid + BCELoss。
+[BCELoss](https://pytorch.org/docs/stable/generated/torch.nn.BCELoss.html) $=-y\log(\hat{y}) - (1-y)\log(1-\hat{y})$， 用于二分类或者 **多标签** 分类（每类独立不互斥，计算总 loss 时对所有类的交叉熵取平均即可）。虽然是两项之和，但对于确定的 label $y \in \{0, 1\}$，总是只有一项不为 0。输入的预测值应当是 $[0, 1]$ 之内的概率值，即应当经过 sigmoid 函数。另有 [BCEWithLogitsLoss](https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html)，相当于 Sigmoid + BCELoss。
 
 [CrossEntropyLoss](https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html) $=-\sum y\log(\operatorname{softmax}(\hat{y}))$ 用于多分类（各类互斥）。Ground truth label 应是 ~~one-hot 向量~~ 指示真值 label 所在 index 的索引序号。相当于 LogSoftmax + [NLLLoss](https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html)。
 
@@ -205,7 +203,7 @@ y_conv = fc_conv(x.permute(0, 2, 1)) # [50, 256, 1024]
 
 `nn.Transformer` 及其相关的高层 API 中，输入的 bool `mask`都是 `True` 表示不参与 attention；而 `F.scaled_dot_product_attention()` 函数中的 `attn_mask` 参数（包括一些自实现的 Attention 代码）则恰恰相反。
 
-> If a boolean tensor is provided for any of the [src/tgt/memory]\_mask arguments, positions with a `True` value are not allowed to participate in the attention, which is the opposite of the definition for `attn_mask` in [`torch.nn.functional.scaled_dot_product_attention()`](https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html#torch.nn.functional.scaled_dot_product_attention "torch.nn.functional.scaled_dot_product_attention").
+> If a boolean tensor is provided for any of the \[src/tgt/memory]\_mask arguments, positions with a `True` value are not allowed to participate in the attention, which is the opposite of the definition for `attn_mask` in [`torch.nn.functional.scaled_dot_product_attention()`](https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html#torch.nn.functional.scaled_dot_product_attention "torch.nn.functional.scaled_dot_product_attention").
 
 参考：<https://pytorch.org/docs/stable/generated/torch.nn.Transformer.html>
 
@@ -237,7 +235,7 @@ mask = torch.triu(torch.ones((N, N), dtype=torch.bool), diagonal=1)
 参考链接：
 
 - [一文弄懂 Pytorch 的 DataLoader, DataSet, Sampler 之间的关系 - marsggbo - 博客园](https://www.cnblogs.com/marsggbo/p/11308889.html)
-- [PyTorch 教程-5：详解 PyTorch 中加载数据的方法--Dataset、Dataloader、Sampler、collate_fn 等 - CSDN 博客](https://blog.csdn.net/qq_38962621/article/details/111146427)
+- [PyTorch 教程-5：详解 PyTorch 中加载数据的方法--Dataset、Dataloader、Sampler、collate\_fn 等 - CSDN 博客](https://blog.csdn.net/qq_38962621/article/details/111146427)
 - [PyTorch 源码解读之 torch.utils.data：解析数据处理全流程 - 知乎](https://zhuanlan.zhihu.com/p/337850513)
 
 ### 典型的模型训练流程
@@ -360,7 +358,7 @@ model = model.cuda()
 
 单进程多线程，受到 python 全局解释器锁（GIL）的限制
 
-> 将输入的数据均分成多份，分别送到对应的 GPU 进行计算。与 Module 相关的所有数据也都会以浅复制的方式复制多份。每个 GPU 在单独的线程上将针对各自的输入数据独立并行地进行 forward 计算，然后在主 GPU 上**收集网络输出**，并计算损失。接着，主 GPU **分散损失值**给从属 GPU，每个 GPU 独立进行反向传播以计算梯度。最后，主 GPU **汇总各梯度**、进行梯度下降，并更新主 GPU 上的模型参数，再将更新后的**模型参数广播复制**到剩余的从属 GPU 中。
+> 将输入的数据均分成多份，分别送到对应的 GPU 进行计算。与 Module 相关的所有数据也都会以浅复制的方式复制多份。每个 GPU 在单独的线程上将针对各自的输入数据独立并行地进行 forward 计算，然后在主 GPU 上 **收集网络输出**，并计算损失。接着，主 GPU **分散损失值** 给从属 GPU，每个 GPU 独立进行反向传播以计算梯度。最后，主 GPU **汇总各梯度**、进行梯度下降，并更新主 GPU 上的模型参数，再将更新后的 **模型参数广播复制** 到剩余的从属 GPU 中。
 
 DP 的 batch-size 是指多卡 batch-size，即 $N$ 张卡各自的 batch-size 是原始的 $1/N$。
 
@@ -380,11 +378,11 @@ CUDA_VISIBLE_DEVICES=0,1,2,3
 
 多进程（几个 GPU 就产生几个进程），充分利用性能；传输的数据量少于 DP，速度更快，效率更高
 
-> 只需要编写一份代码，torch 就会自动将其分配给 n 个进程，分别在 n 个 GPU 上运行，每个 GPU 执行相同的任务。每个进程都从磁盘加载其自己的数据，由 DistributedSampler 确保加载的数据在各个进程之间不重叠。损失函数的前向传播和计算在每个 GPU 上独立执行，因此不需要收集网络输出。在反向传播期间，梯度下降在所有 GPU 上均被执行，然后由 `local_rank=0` 的进程**广播汇总平均后的梯度**给其他进程。最后，各进程用该梯度来独立地更新参数。由于梯度值相同，各进程的模型参数也就始终保持一致。
+> 只需要编写一份代码，torch 就会自动将其分配给 n 个进程，分别在 n 个 GPU 上运行，每个 GPU 执行相同的任务。每个进程都从磁盘加载其自己的数据，由 DistributedSampler 确保加载的数据在各个进程之间不重叠。损失函数的前向传播和计算在每个 GPU 上独立执行，因此不需要收集网络输出。在反向传播期间，梯度下降在所有 GPU 上均被执行，然后由 `local_rank=0` 的进程 **广播汇总平均后的梯度** 给其他进程。最后，各进程用该梯度来独立地更新参数。由于梯度值相同，各进程的模型参数也就始终保持一致。
 
 调用 `DistributedSampler` 直接为各进程产生数据：`train_sampler = torch.utils.data.distributed.DistributedSampler(train_data)`。若需要 shuffle，实例化时设置 `shuffle=True` 还不够，需要在 for 循环训练时将当前的 epoch 数传入：`train_sampler.set_epoch(epoch)`（后续 Dataloader 设置 `shuffle=False` 即可）。（[参考链接](https://www.zhihu.com/question/67209417/answer/1017851899)）
 
-DDP 在设计时利用 Pytorch 中的 hook 机制实现了非侵入式的 API：在执行 `loss.backward()` 时，各个进程首先各自开始反向计算梯度，当所有进程的梯度都计算完毕后，再执行一个所有进程间的 all-reduce 梯度平均操作，最后才把平均后的梯度值写入`parameter.grad`。因此，一般来说，DDP 的反向传播过程**无需**添加任何额外的代码。
+DDP 在设计时利用 Pytorch 中的 hook 机制实现了非侵入式的 API：在执行 `loss.backward()` 时，各个进程首先各自开始反向计算梯度，当所有进程的梯度都计算完毕后，再执行一个所有进程间的 all-reduce 梯度平均操作，最后才把平均后的梯度值写入`parameter.grad`。因此，一般来说，DDP 的反向传播过程 **无需** 添加任何额外的代码。
 
 DDP 的 batch-size 是指单卡 batch-size，相当于 $N$ 张卡的总 batch-size 扩大了 $N$ 倍。
 
